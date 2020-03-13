@@ -18,8 +18,8 @@ class Operacoes():
     try:
         connection = Connection().get_connection()
         cursor = connection.cursor()
-        insert = """insert into chamadoti (tipo_chamado, prioridade, data_criacao, info_criador, 
-            info_func, info_chamado, status) values ('{0}', {1}, {2}, '{3}', '{4}', '{5}', '{6}');""".format(
+        insert = """insert into chamadoti (tipochamado, prioridade, datacriacao, infocriador, 
+            infofunc, infochamado, status) values ('{0}', {1}, {2}, '{3}', '{4}', '{5}', '{6}');""".format(
             tipo_chamado, prioridade, data_criacao, info_criador,
             info_func, info_chamado, status)
         cursor.execute(insert)
@@ -45,8 +45,8 @@ class Operacoes():
         try:
             connection = Connection().get_connection()
             cursor = connection.cursor()
-            insert = """insert into chamdopapelaria (q_caneta, q_lapis, q_resma, q_cola, 
-                    prioridade, data_criacao, info_criador, info_func, info_chamado, status ) values ({0}, {1}, {2}, {3}, 
+            insert = """insert into chamdopapelaria (qcaneta, qlapis, qresma, qcola, 
+                    prioridade, datacriacao, infocriador, infofunc, infochamado, status ) values ({0}, {1}, {2}, {3}, 
                     {4}, {5}, '{6}', '{7}', '{8}','{9}');""".format(q_caneta, q_lapis, q_resma, q_cola,
                                                                   prioridade, data_criacao, info_criador, info_func,
                                                                   info_chamado, status)

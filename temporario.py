@@ -134,3 +134,91 @@ def v_meuchamdo_func(self, json):
     info_func = json['info_func']
 
 
+def add_setor(self, json):
+
+    setor = json['setor']
+    idsetor = json['id_setor']
+
+    try:
+        connection = Connection().get_connection()
+        cursor = connection.cursor()
+        insert = """insert into setor (setor, idsetor) values ('{0}', {1});""".format(
+            setor, idsetor)
+        cursor.execute(insert)
+        connection.commit()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Error", error)
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+def remove_setor(self, json):
+    idsetor = json['id_setor']
+
+    try:
+        connection = Connection().get_connection()
+        cursor = connection.cursor()
+        deleta = "delete from setor where id={0}".format(idsetor)
+        cursor.execute(deleta)
+        connection.commit()
+        self.listar()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Error", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+
+def list_todos_chamados_ti(self):
+    try:
+        connection = Connection().get_connection()
+        cursor = connection.cursor()
+        select = "select * from chamadoti"
+        cursor.execute(select)
+        chamado = cursor.fetchall()
+
+        for row in chamado:
+            print("Id = ", row[0], )
+            print("tipo_chamado = ", row[1])
+            print("prioridade  = ", row[2])
+            print("data_criacao = ", row[3] )
+            print("info_criador  = ", row[4])
+            print("info_func  = ", row[5])
+            print("info_chamado  = ", row[6])
+            print("status  = ", row[7], "\n")
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error", error)
+    finally:
+        if (connection):
+            cursor.close()
+            connection.close()
+
+def save_usuario(self, json):
+    nome = json['nome']
+    email = json['email']
+    login = json['login']
+    senha = json['senha']
+    id_setor = json['id_setor']
+    nivel_permissao = json['nivel_permissao']
+
+    try:
+        connection = Connection().get_connection()
+        cursor = connection.cursor()
+        insert = """insert into usuario (nome, email, login, senha, idsetor, nivelpermissao) values ('{0}', '{1}', '{2}', 
+        '{3}', {4}, {5});""".format(nome, email, login, senha, id_setor, nivel_permissao)
+        cursor.execute(insert)
+        connection.commit()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Error", error)
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+
+
+
