@@ -219,6 +219,41 @@ def save_usuario(self, json):
             cursor.close()
             connection.close()
 
+def consultar_usu(self, json):
+    login = json['login']
+
+    try:
+        connection = Connection().get_connection()
+        cursor = connection.cursor()
+        select = "select * from usuario where login = {0}".format(login)
+        cursor.execute(select)
+        chamado = cursor.fetchall()
+
+        for row in chamado:
+            nome = row[0]
+            email = row[1]
+            login = row[2]
+            idsetor = row[4]
+            nivelpermissao = row[5]
+
+        json_volta = {
+
+            'nome': nome,
+            'emial': email,
+            'login': login,
+            'idsetor': idsetor,
+            'nivelpermissao': nivelpermissao,
+        }
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error", error)
+    finally:
+        if (connection):
+            cursor.close()
+            connection.close()
+
+
+
 
 
 
