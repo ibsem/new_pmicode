@@ -16,7 +16,7 @@ def salvar(self, nome, sobrenome, curso):
 
 
 
-def save_chamado_ti(json):
+def save_chamado_ti(self, json):
 
     tipo_chamado = json['tipo_chamado']
     prioridade = json['prioridade']
@@ -56,11 +56,11 @@ def save_chamado_ti(json):
 
     connection = Connection().get_connection()
     cursor = connection.cursor()
-    insert = """insert into chamadoti (q_caneta, q_lapis, q_resma, q_cola, 
-            prioridade, data_criacao, info_criador, info_func, info_chamado, status ) values ('{0}', {1}, {2}, '{3}', 
-            '{4}', '{5}', '{6}', '{7}', '{8}');""".format(q_caneta, q_lapis, q_resma, q_cola,
-        prioridade, data_criacao, info_criador, info_func,
-        info_chamado, status)
+    insert = """"insert into chamdopapelaria (qcaneta, qlapis, qresma, qcola, 
+                    prioridade, datacriacao, infocriador, infofunc, infochamado, status ) values ({0}, {1}, {2}, {3}, 
+                    {4}, {5}, '{6}', '{7}', '{8}','{9}');""".format(q_caneta, q_lapis, q_resma, q_cola,
+                                                                  prioridade, data_criacao, info_criador, info_func,
+                                                                  info_chamado, status)
     cursor.execute(insert)
     connection.commit()
 
@@ -71,47 +71,6 @@ if connection:
     cursor.close()
     connection.close()
 
-
-  def save_cadastro_usu(self, json):
-     nome = json['nome']
-     email = json['email']
-     login = json['login']
-     senha = json['senha']
-     try:
-         connection = Connection().get_connection()
-         cursor = connection.cursor()
-         insert = """insert into cadastrousuario (nome, email, login, senha) values ('{0}', '{1}', {2}, {3});""".format(
-             nome, email, login, senha)
-         cursor.execute(insert)
-         connection.commit()
-     except (Exception, psycopg2.DatabaseError) as error:
-         print("Error", error)
-     finally:
-         if connection:
-             cursor.close()
-             connection.close()
-
-
-def save_cadastro_func(self, json):
-
-    nome = json['nome']
-    email = json['email']
-    login = json['login']
-    senha = json['senha']
-
-    try:
-        connection = Connection().get_connection()
-        cursor = connection.cursor()
-        insert = """insert into cadastrofuncionario (nome, email, login, senha) values ('{0}', '{1}', {2}, {3});""".format(
-            nome, email, login, senha)
-        cursor.execute(insert)
-        connection.commit()
-    except (Exception, psycopg2.DatabaseError) as error:
-        print("Error", error)
-    finally:
-        if connection:
-            cursor.close()
-            connection.close()
 
 def val_cadastro_gest(self, json):
 
@@ -153,6 +112,7 @@ def add_setor(self, json):
             cursor.close()
             connection.close()
 
+
 def remove_setor(self, json):
     idsetor = json['id_setor']
 
@@ -172,6 +132,60 @@ def remove_setor(self, json):
             connection.close()
 
 
+def remove_chamado_ti(self, json):
+    id_ti = json['id']
+
+    try:
+        connection = Connection().get_connection()
+        cursor = connection.cursor()
+        deleta = "delete from chamadoti where id={0}".format(id_ti)
+        cursor.execute(deleta)
+        connection.commit()
+        self.listar()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Error", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+def remove_chamado_pape(self, json):
+    id_pape = json['id']
+
+    try:
+        connection = Connection().get_connection()
+        cursor = connection.cursor()
+        deleta = "delete from chamdopapelaria where id={0}".format(id_pape)
+        cursor.execute(deleta)
+        connection.commit()
+        self.listar()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Error", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+            idsetor = json['id_setor']
+
+            try:
+                connection = Connection().get_connection()
+                cursor = connection.cursor()
+                deleta = "delete from setor where id={0}".format(idsetor)
+                cursor.execute(deleta)
+                connection.commit()
+                self.listar()
+            except (Exception, psycopg2.DatabaseError) as error:
+                print("Error", error)
+
+            finally:
+                if connection:
+                    cursor.close()
+                    connection.close()
+
+
 def list_todos_chamados_ti(self):
     try:
         connection = Connection().get_connection()
@@ -181,14 +195,25 @@ def list_todos_chamados_ti(self):
         chamado = cursor.fetchall()
 
         for row in chamado:
-            print("Id = ", row[0], )
-            print("tipo_chamado = ", row[1])
-            print("prioridade  = ", row[2])
-            print("data_criacao = ", row[3] )
-            print("info_criador  = ", row[4])
-            print("info_func  = ", row[5])
-            print("info_chamado  = ", row[6])
-            print("status  = ", row[7], "\n")
+            Id = row[0]
+            tipo_chamado = row[1]
+            prioridade = row[2]
+            data_criacao = row[3]
+            info_criador = row[4]
+            info_func = row[5]
+            info_chamado = row[6]
+            status = row[7]
+        json_volta = {
+
+            'id': Id,
+            'tipo_chamado': tipo_chamado,
+            'prioridade': prioridade,
+            'data_criacao': data_criacao,
+            'info_criador': info_criador,
+            'info_func': info_func,
+            'info_chamado': info_chamado,
+            'status': status,
+        }
 
     except (Exception, psycopg2.Error) as error:
         print("Error", error)
@@ -254,6 +279,112 @@ def consultar_usu(self, json):
 
 
 
+def lista_ti_id(self, json):
+    id_chamado = json['id']
+
+    try:
+        connection = Connection().get_connection()
+        cursor = connection.cursor()
+        select = "select * from chamadoti where id = {0}".format(id_chamado)
+        cursor.execute(select)
+        chamado = cursor.fetchall()
+
+        for row in chamado:
+            Id = row[0]
+            tipo_chamado =  row[1]
+            prioridade = row[2]
+            data_criacao = row[3]
+            info_criador = row[4]
+            info_func = row[5]
+            info_chamado =  row[6]
+            status =  row[7]
+        json_volta = {
+
+            'id': Id,
+            'tipo_chamado': tipo_chamado,
+            'prioridade': prioridade,
+            'data_criacao': data_criacao,
+            'info_criador': info_criador,
+            'info_func': info_func,
+            'info_chamado': info_chamado,
+            'status': status,
+        }
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error", error)
+    finally:
+        if (connection):
+            cursor.close()
+            connection.close()
+
+def lista_pape_id(self, json):
+    id_chamado = json['id']
+
+    try:
+        connection = Connection().get_connection()
+        cursor = connection.cursor()
+        select = "select * from chamadopapelaria where id = {0}".format(id_chamado)
+        cursor.execute(select)
+        chamado = cursor.fetchall()
+
+        for row in chamado:
+            Id = row[0]
+            qcaneta =  row[1]
+            qlapis = row[2]
+            qresma = row[3]
+            qcola = row[4]
+            prioridade = row[5]
+            datacriacao = row[6]
+            infocriador =  row[7]
+            infofunc =  row[8]
+            infochamado = row[9]
+            status = row[10]
+        json_volta = {
+
+            'id': Id,
+            'qcaneta': qcaneta,
+            'qlapis': qlapis,
+            'qresma': qresma,
+            'qcola': qcola,
+            'prioridade': prioridade,
+            'datacriacao': datacriacao,
+            'infocriador': infocriador,
+            'infofunc': infofunc,
+            'infochamado': infochamado,
+            'status': status,
+        }
+    except (Exception, psycopg2.Error) as error:
+        print("Error", error)
+    finally:
+        if (connection):
+            cursor.close()
+            connection.close()
+
+def list_todos_setores(self):
+    try:
+        connection = Connection().get_connection()
+        cursor = connection.cursor()
+        select = "select * from setor"
+        cursor.execute(select)
+        chamado = cursor.fetchall()
+
+        for row in chamado:
+            Id = row[0]
+            setor = row[1]
+            idsetor =row[2]
+        json_volta = {
+
+            'id': Id,
+            'setor': setor,
+            'idsetor': idsetor,
+        }
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error", error)
+    finally:
+        if (connection):
+            cursor.close()
+            connection.close()
 
 
 
